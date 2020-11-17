@@ -568,7 +568,7 @@ class PCA(Plot):
         super().__init__(options, df)
 
     def render_data(self):
-        feature_names = self.options.cols
+        feature_names = self.options.features
         # Build a dataframe with the columns that we are interested in
         selected_columns = self.df[feature_names]
         # Handle rows in the data that have missing values
