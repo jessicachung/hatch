@@ -588,7 +588,9 @@ class PCA(Plot):
         standardized_data = scaler.fit_transform(selected_columns)
         # Perform PCA on the standardized data
         pca = sk_decomp.PCA(n_components=2)
-        pca_transform = pca.fit_transform(standardized_data)
+        pca_fit = pca.fit(standardized_data)
+        pca_transform = pca_fit.transform(standardized_data)
+        explained_variance = pca_fit.explained_variance_ratio_
         # Build a new dataframe for the PCA transformed data, adding columnd headings for the 2 components
         first_two_components = pd.DataFrame(data = pca_transform, columns = ['principal component 1', 'principal component 2'])
         # Optionally select a column to use for colouring the dots in the plot
@@ -598,7 +600,8 @@ class PCA(Plot):
         # Generate a scatter plot for the PCA transformed data
         graph=sns.scatterplot(data=first_two_components, x='principal component 1', y='principal component 2', hue=self.options.hue,
                           alpha=self.options.dotalpha, size=self.options.dotsize, linewidth=self.options.dotlinewidth)
-        self.ax.set(xlabel='principal component 1', ylabel='principal component 2')
+        self.ax.set(xlabel='PC1 ({:.2f}%)'.format(explained_variance[0] * 100),
+                    ylabel='PC2 ({:.2f}%)'.format(explained_variance[1] * 100))
         if self.options.hue is not None:
             graph.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0)
         if self.options.nolegend:
